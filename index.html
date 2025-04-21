@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Vídeo com Overlay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vídeo de Fundo com Som</title>
   <style>
     html, body {
       margin: 0;
@@ -11,13 +12,13 @@
       overflow: hidden;
     }
 
-    /* Vídeo de fundo */
+    /* Vídeo ocupa toda a tela */
     video.bg-video {
       position: fixed;
       top: 0;
       left: 0;
-      min-width: 100%;
-      min-height: 100%;
+      width: 100vw;
+      height: 100vh;
       object-fit: cover;
       z-index: -2;
     }
@@ -27,13 +28,13 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5); /* 0.5 = 50% escuro, ajuste como quiser */
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
       z-index: -1;
     }
 
-    /* Conteúdo acima do vídeo e overlay */
+    /* Conteúdo em destaque */
     .conteudo {
       position: relative;
       z-index: 0;
@@ -42,12 +43,13 @@
       top: 50%;
       transform: translateY(-50%);
       font-size: 2rem;
+      padding: 1rem;
     }
   </style>
 </head>
 <body>
 
-<video class="bg-video" id="bgVideo" loop muted>
+<video class="bg-video" id="bgVideo" loop playsinline>
   <source src="https://github.com/RICZIN2008/Fundo/raw/refs/heads/main/zTokyo - Quem eu era antes baby_ (PROD. zTokyo)(720P_HD).mp4" type="video/mp4">
   Seu navegador não suporta o vídeo.
 </video>
@@ -56,27 +58,41 @@
 
 <div class="conteudo">
   <h1>Texto em destaque</h1>
-  <p>Aqui pode ir uma descrição, botão, ou imagem</p>
+  <p>Seu conteúdo aparece aqui por cima do vídeo com som.</p>
 </div>
 
 <script>
   const video = document.getElementById('bgVideo');
 
+  // Só reproduz com som após interação do usuário
+  function iniciarVideoComSom() {
+    video.play().catch(e => {
+      console.log("Autoplay com som bloqueado, esperando clique...");
+    });
+  }
+
+  // Inicia o vídeo após um toque/clique se necessário
+  window.addEventListener('load', () => {
+    if (document.visibilityState === 'visible') {
+      iniciarVideoComSom();
+    }
+  });
+
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
-      if (video.paused) {
-        video.play().catch(e => console.log("Erro ao reproduzir vídeo:", e));
-      }
+      iniciarVideoComSom();
     } else {
       video.pause();
     }
   });
 
-  window.addEventListener('load', () => {
-    if (document.visibilityState === 'visible') {
-      video.play().catch(e => console.log("Erro ao reproduzir vídeo:", e));
+  // Garante que som funcione após toque em celulares
+  document.addEventListener('click', () => {
+    if (video.paused) {
+      video.play();
     }
-  });
+    video.muted = false;
+  }, { once: true }); // Executa só no primeiro clique
 </script>
 
 </body>
