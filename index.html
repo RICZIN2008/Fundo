@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vídeo em Tela Cheia</title>
+  <title>Vídeo em Tela Cheia com Filtro Preto</title>
   <style>
     html, body {
       margin: 0;
@@ -20,23 +20,25 @@
       height: 100vh;
       object-fit: cover;
       z-index: -2;
+      background: black;
     }
 
+    /* Filtro preto escuro */
     .overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.6); /* Mais escuro */
       z-index: -1;
     }
   </style>
 </head>
 <body>
 
-<video class="bg-video" id="bgVideo" loop playsinline>
-  <source src="https://github.com/RICZIN2008/Fundo/raw/refs/heads/main/zTokyo - Quem eu era antes baby_ (PROD. zTokyo)(720P_HD).mp4" type="video/mp4">
+<video class="bg-video" id="bgVideo" loop playsinline preload="auto">
+  <source src="https://github.com/RICZIN2008/Fundo/raw/refs/heads/main/zTokyo" type="video/mp4">
   Seu navegador não suporta o vídeo.
 </video>
 
@@ -45,33 +47,25 @@
 <script>
   const video = document.getElementById('bgVideo');
 
-  // Função para iniciar vídeo com som
-  function iniciarVideo() {
+  // Inicia o vídeo quando estiver pronto
+  video.addEventListener('canplaythrough', () => {
     video.muted = false;
-    video.play().catch(e => {
-      console.log("Autoplay com som bloqueado, esperando interação...");
-    });
-  }
-
-  // Tentar iniciar ao carregar se possível
-  window.addEventListener('load', () => {
-    if (document.visibilityState === 'visible') {
-      iniciarVideo();
-    }
+    video.play().catch(e => console.log("Erro ao reproduzir:", e));
   });
 
-  // Pausar/continuar conforme a aba ativa/inativa
+  // Pausa e retoma com base na visibilidade da aba
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
-      iniciarVideo();
+      video.play().catch(() => {});
     } else {
       video.pause();
     }
   });
 
-  // Tocar com som após clique no celular
+  // Força play com som após clique em dispositivos móveis
   document.addEventListener('click', () => {
-    iniciarVideo();
+    video.muted = false;
+    video.play().catch(() => {});
   }, { once: true });
 </script>
 
