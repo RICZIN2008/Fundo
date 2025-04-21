@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vídeo em Tela Cheia com Filtro Preto</title>
+  <title>Vídeo em Tela Cheia</title>
   <style>
     html, body {
       margin: 0;
@@ -23,14 +23,13 @@
       background: black;
     }
 
-    /* Filtro preto escuro */
     .overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.6); /* Mais escuro */
+      background: rgba(0, 0, 0, 0.4);
       z-index: -1;
     }
   </style>
@@ -47,13 +46,13 @@
 <script>
   const video = document.getElementById('bgVideo');
 
-  // Inicia o vídeo quando estiver pronto
+  // Inicia vídeo assim que estiver pronto para tocar
   video.addEventListener('canplaythrough', () => {
     video.muted = false;
     video.play().catch(e => console.log("Erro ao reproduzir:", e));
   });
 
-  // Pausa e retoma com base na visibilidade da aba
+  // Garante que volte a tocar se a aba for reativada
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
       video.play().catch(() => {});
@@ -62,7 +61,7 @@
     }
   });
 
-  // Força play com som após clique em dispositivos móveis
+  // Reforça autoplay via clique se necessário (mobile)
   document.addEventListener('click', () => {
     video.muted = false;
     video.play().catch(() => {});
