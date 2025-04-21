@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vídeo de Fundo com Som</title>
+  <title>Vídeo em Tela Cheia</title>
   <style>
     html, body {
       margin: 0;
@@ -12,7 +12,6 @@
       overflow: hidden;
     }
 
-    /* Vídeo ocupa toda a tela */
     video.bg-video {
       position: fixed;
       top: 0;
@@ -23,27 +22,14 @@
       z-index: -2;
     }
 
-    /* Overlay escuro */
     .overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.4);
       z-index: -1;
-    }
-
-    /* Conteúdo em destaque */
-    .conteudo {
-      position: relative;
-      z-index: 0;
-      color: white;
-      text-align: center;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 2rem;
-      padding: 1rem;
     }
   </style>
 </head>
@@ -56,43 +42,37 @@
 
 <div class="overlay"></div>
 
-<div class="conteudo">
-  <h1>Texto em destaque</h1>
-  <p>Seu conteúdo aparece aqui por cima do vídeo com som.</p>
-</div>
-
 <script>
   const video = document.getElementById('bgVideo');
 
-  // Só reproduz com som após interação do usuário
-  function iniciarVideoComSom() {
+  // Função para iniciar vídeo com som
+  function iniciarVideo() {
+    video.muted = false;
     video.play().catch(e => {
-      console.log("Autoplay com som bloqueado, esperando clique...");
+      console.log("Autoplay com som bloqueado, esperando interação...");
     });
   }
 
-  // Inicia o vídeo após um toque/clique se necessário
+  // Tentar iniciar ao carregar se possível
   window.addEventListener('load', () => {
     if (document.visibilityState === 'visible') {
-      iniciarVideoComSom();
+      iniciarVideo();
     }
   });
 
+  // Pausar/continuar conforme a aba ativa/inativa
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
-      iniciarVideoComSom();
+      iniciarVideo();
     } else {
       video.pause();
     }
   });
 
-  // Garante que som funcione após toque em celulares
+  // Tocar com som após clique no celular
   document.addEventListener('click', () => {
-    if (video.paused) {
-      video.play();
-    }
-    video.muted = false;
-  }, { once: true }); // Executa só no primeiro clique
+    iniciarVideo();
+  }, { once: true });
 </script>
 
 </body>
